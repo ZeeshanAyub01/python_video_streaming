@@ -3,6 +3,7 @@ import numpy
 import socket
 import base64
 import time
+import threading
 
 MSG_LENGTH = 4096*4 #Size of the Chunk of data to accept at any one time
 HDR_LENGTH = 5 #predefined length of the header, that contains the size of the incoming video frame
@@ -22,6 +23,12 @@ num_frames = 0 #number of complete frames received
 start = 0
 end = 0
 display_time = 0
+frames_captured = 0
+
+def capture_and_store(frame, frame_num):
+    frame_name = 'captures/capture_' + str(frame_num) + '.png'
+    cv2.imwrite(frame_name,frame)
+    print("Captured and stored frame as ", frame_name)
 
 while True:
     client_socket, client_address = server_socket.accept()
@@ -40,7 +47,7 @@ while True:
             if frame_end > 0:
                 num_frames += 1
                 video_bytes = data[HDR_LENGTH:frame_end] #
-                print(f"Current frame size: {len(video_bytes)}") #Line added for debugging purposes
+                #print(f"Current frame size: {len(video_bytes)}") #Line added for debugging purposes
                 nparr = numpy.frombuffer(video_bytes, numpy.uint8) #Converts the data received from bytes to a numpy array
                 frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR) #Converts the numpy array to a video frame
                 data = b'' #restores 'data' variable to an empty binary string
@@ -49,7 +56,15 @@ while True:
                 client_socket.send(bytes("Full frame received",'utf-8')) #Acknowledgment for receiving a full frame
                 try:
                     cv2.imshow("Stream", frame) #Displays the received frame
-                    if cv2.waitKey(2) & 0xFF == ord('q'): #to display the current frame indefinitely
+                    key_pressed = cv2.waitKey(1)
+                    #if cv2.waitKey(1) & 0xFF == ord('c'):  # to display the current frame 1 milli-second
+                    if key_pressed == 99: 
+                        frames_captured += 1
+                        t = threading.Thread(target=capture_and_store, args=(frame,frames_captured))
+                        t.start()
+                        t.join()
+                    #if cv2.waitKey(1) & 0xFF == ord('q'): #to display the current frame for 1 milli-second
+                    elif key_pressed == 27:
                         flag = 0
                         display_time = time.time() - start
                         break
