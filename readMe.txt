@@ -13,4 +13,4 @@ To capture the current frame:
 1. Press 'c'; this will store the current frame as a '.png' image in the same folder as the scripts
 
 How to stop the program:
-Go over to the python video, and press 'Esc'.
+Go over to the python video, and press 'Esc'; pressing 'q' will not exit the video
