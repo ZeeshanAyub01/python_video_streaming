@@ -9,7 +9,7 @@ How to run the program:
 1. Run server.py
 2. Run client.py
 
-   *Note: Before running client.py the IP address of the host computer will have to hardcoded into the IP variable in the client.py file. The host's IP address on the current network can be obtained by opening a terminal on the host computer and typing in 'ipconfig', and      looking under the network.
+   *Note: Before running client.py the IP address of the host computer will have to hardcoded into the IP variable in the client.py file. The host's IP address on the current network can be obtained by opening a terminal on the host computer and typing in 'ipconfig', and looking under the network.
 
 To capture the current frame:
 1. Press 'c'; this will store the current frame as a '.png' image in the same folder as the scripts
